@@ -28,6 +28,7 @@ Frontend: O frontend do projeto contém os arquivos principais descritos abaixo:
 
 
 Instruções para execução: Para execução do projeto, o mesmo deve ser startado no Visual Studio, ou deployado no IIS.
+As imagens .png são para mostrar as três telas criadas rodando no visual studio.
 
 
 
