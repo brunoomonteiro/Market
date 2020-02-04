@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Supermarket</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="mainStyle.css">
+
+</head>
+<body>
+    <div class="container">
+        <center><img src="supermarketImg.png" alt="Smiley face" height="200" width="200" align="middle" class="logo"></center>
+        <h2>Stock:</h2>
+        <input type="button" value="List" onclick="listProducts()" id="listButtonId" />
+        <p id="product"></p>
+        <input type="button" value="New product" onclick="location.href='newProduct.html'" style="position:relative">
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        <script>
+            var uri = 'api/supermarket';
+            listProducts();
+            function listProducts() {
+                document.getElementById('listButtonId').style.visibility = 'hidden';
+                $.getJSON(uri + '/ListProducts')
+                    .done(function (data) {
+                        var str = '<ul>'
+                        for (var count = 0; count < data.length; count++) {
+                            // Add a list item for the product.
+                            str += '<li class="w3-display-container">' + "Product Code: " + data[count].code + " - Name: " + data[count].name
+                                + " - Price: " + data[count].price + " - Quantity: " + data[count].quantity
+                                + '<button type="button" value="Edit" onclick="redirectToEditPage(\'' + data[count].code + ',' + data[count].name + ',' + data[count].price + ',' + data[count].quantity + '\')">' + "<i class='fa fa-edit'></i></button>"
+                                + "<button type='button' value='Delete' onclick='deleteProduct(" + data[count].code + ")'><i class='fa fa-trash'></i></button>"
+                                + '</li>';
+
+                        }
+                        str += '</ul>';
+                        document.getElementById("product").innerHTML = str;
+
+                    })
+                    .fail(function (jqXHR, textStatus, err) {
+                        $('#product').text('Error: ' + err);
+                    });
+            }
+
+
+            function deleteProduct(id) {
+                $.ajax({
+                    url: uri + '/' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        alert('Product ' + id + ' has removed!')
+                        window.location.href = "index.html";
+                    }
+                });
+
+            }
+            function redirectToEditPage(str) {
+                strSplited = str.split(",");
+                window.location.href = "editProduct.html?code=" + strSplited[0] + "&name=" + strSplited[1]
+                    + "&price=" + strSplited[2] + "&quantity=" + strSplited[2];
+            }
+        </script>
+    </div>
+</body>
+</html>

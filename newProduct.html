@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+    <link rel="stylesheet" href="mainStyle.css">
+</head>
+<body>
+    <div class="container">
+        <div>
+            <h2>New product</h2>
+            <ul id="products" />
+        </div>
+        <div>
+            <h2>Product information</h2>
+            <form action="AddNew" onsubmit='return false'>
+                Code:<br>
+                <input type="Number" name="code" value="" id="codeId"><br>
+                Name:<br>
+                <input type="text" name="name" value="" id="nameId"><br>
+                Price:<br>
+                <input type="Number" name="price" value="0" id="priceId"><br>
+                Quantity:<br>
+                <input type="Number" name="quantity" value="0" id="quantityId"><br><br>
+                <input name="Submit" type="submit" value="Create" onClick="JavaScript:AddNewProduct()" />
+                <input type="button" value="Back" onclick="location.href='index.html'">
+            </form>
+
+        </div>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        <script>
+            var uri = 'api/supermarket';
+
+
+            function listProducts() {
+                $.getJSON(uri + '/ListProducts')
+                    .done(function (data) {
+                        for (var count = 0; count < data.length; count++) {
+                            // Add a list item for the product.
+                            $('<li>', {
+                                text: "Product Code: " + data[count].code + " - Name: " + data[count].name
+                                    + " - Price: " + data[count].price + " - Quantity: " + data[count].quantity
+                            }).appendTo($('#products'));
+                        }
+
+                    })
+                    .fail(function (jqXHR, textStatus, err) {
+                        $('#product').text('Error: ' + err);
+                    });
+            }
+
+            function AddNewProduct() {
+                xhr = new XMLHttpRequest();
+                url = uri + "/Add";
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        alert('Product ' + document.getElementById("nameId").value + ' has created!');
+                    }
+                }
+                var data = JSON.stringify({
+                    "code": document.getElementById("codeId").value,
+                    "name": document.getElementById("nameId").value,
+                    "price": document.getElementById("priceId").value,
+                    "quantity": document.getElementById("quantityId").value
+                });
+                xhr.send(data);
+
+            }
+
+
+        </script>
+    </div>
+</body>
+</html>
